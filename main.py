@@ -150,7 +150,7 @@ class MainWindow(Gtk.Window):
     def get_data(self):
         return self.device.get_data()
 
-device = Device("/dev/pts/6", 9600)
+device = Device("/dev/pts/3", 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
