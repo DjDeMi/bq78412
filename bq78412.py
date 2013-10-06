@@ -17,6 +17,8 @@ class Device:
         return data
 
     def reset_rsoc(self):
+        self.send_command(b"\xFF\x13\x05\x00\x00\x64\x8D")
+        raw_data = self.read_input(3)
         return True
 
     def send_command(self, command):

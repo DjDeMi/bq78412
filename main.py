@@ -126,6 +126,8 @@ class MainWindow(Gtk.Window):
 
     def on_rsoc_button_clicked(self, button):
         self.device.reset_rsoc()
+        print("aaa")
+        self.update_data()
         print("rsoc reset")
 
     def on_refresh_toggled(self, refresh_check):
@@ -150,7 +152,7 @@ class MainWindow(Gtk.Window):
     def get_data(self):
         return self.device.get_data()
 
-device = Device("/dev/pts/3", 9600)
+device = Device("/dev/pts/7", 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
