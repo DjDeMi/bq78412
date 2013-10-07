@@ -6,9 +6,11 @@ def help():
 
     aukerak:
     -p, --port=PORT: Erabili nahi den portu seriaren helbidea
+    -t, --timeout=TIMEOUT: Serie portuaren timeout-a (segundutan)
+    -tbd, --timebetweendata=TBD: Behin baino gehiagotan jarriz gero datuak jasotzen, datu bat eta hurrengoaren artean zenbat denbora pasako den (segundutan). GOMENDAGARRIA 5 SEGUNDUTIK GORA
 
     Adibidez:
-        python3.3 main.py -p /dev/ttyUSB0
+        python3.3 main.py -p /dev/ttyUSB0 -t 1 -tbd 10
 
     """)
 
