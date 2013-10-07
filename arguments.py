@@ -7,10 +7,10 @@ def help():
     aukerak:
     -p, --port=PORT: Erabili nahi den portu seriaren helbidea
     -t, --timeout=TIMEOUT: Serie portuaren timeout-a (segundutan)
-    -tbd, --timebetweendata=TBD: Behin baino gehiagotan jarriz gero datuak jasotzen, datu bat eta hurrengoaren artean zenbat denbora pasako den (segundutan). GOMENDAGARRIA 5 SEGUNDUTIK GORA
+    -d, --timebetweendata=TBD: Behin baino gehiagotan jarriz gero datuak jasotzen, datu bat eta hurrengoaren artean zenbat denbora pasako den (segundutan). GOMENDAGARRIA 5 SEGUNDUTIK GORA
 
     Adibidez:
-        python3.3 main.py -p /dev/ttyUSB0 -t 1 -tbd 10
+        python3.3 main.py -p /dev/ttyUSB0 -t 1 -d 10
 
     \n""")
 
@@ -24,8 +24,8 @@ def read_arguments():
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
-                "hp:",
-                ["help", "port=", "timeout=", "timebetweendata="]
+                "hp:td",
+                ["help", "port=", "timeout", "timebetweendata"]
                 )
     except getopt.GetoptError:
         #print help information and exit
@@ -34,6 +34,8 @@ def read_arguments():
 
     #read the arguments
     for o,a in opts:
+        print("opts: "+o)
+        print("args: "+a)
         if o in ("-h", "--help"):
             help()
             sys.exit()
@@ -44,6 +46,6 @@ def read_arguments():
                 values['port'] = a
         elif o in ("-t", "--timeout"):
             values['timeout'] = int(a)
-        elif o in ("-tbd", "--timebetweendata"):
+        elif o in ("-d", "--timebetweendata"):
             values['tbd'] = int(a)
     return values
