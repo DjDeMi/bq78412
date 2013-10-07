@@ -8,7 +8,7 @@ def help():
     -p, --port=PORT: Erabili nahi den portu seriaren helbidea
 
     Adibidez:
-        python main.py -p /dev/ttyUSB0
+        python3.3 main.py -p /dev/ttyUSB0
 
     """)
 
