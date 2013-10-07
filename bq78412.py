@@ -34,8 +34,8 @@ class Device:
     def parse_data(self, raw_data):
         data = {}
         data['voltage'] = (raw_data[6] << 8) + raw_data[5]
-        data['current'] = (raw_data[8] << 8) + raw_data[7]
-        data['avg_current'] = (raw_data[18] << 8) + raw_data[17]
+        data['current'] = ((raw_data[8] << 8) + raw_data[7])/100
+        data['avg_current'] = ((raw_data[18] << 8) + raw_data[17])/100
         data['temperature'] = (raw_data[4] << 8) + raw_data[3]
         data['rsoc'] = (raw_data[24] << 8) + raw_data[23]
         return data
