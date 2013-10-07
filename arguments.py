@@ -2,7 +2,7 @@ import getopt
 import sys
 
 def help():
-    sys.stderr.write("""Erabilera: python main.py [aukerak]
+    sys.stderr.write("""Erabilera: python3.3 main.py [aukerak]
 
     aukerak:
     -p, --port=PORT: Erabili nahi den portu seriaren helbidea
@@ -12,7 +12,7 @@ def help():
     Adibidez:
         python3.3 main.py -p /dev/ttyUSB0 -t 1 -tbd 10
 
-    """)
+    \n""")
 
 
 def read_arguments():
@@ -25,7 +25,7 @@ def read_arguments():
     try:
         opts, args = getopt.getopt(sys.argv[1:],
                 "hp:",
-                ["help", "port="]
+                ["help", "port=", "timeout=", "timebetweendata="]
                 )
     except getopt.GetoptError:
         #print help information and exit

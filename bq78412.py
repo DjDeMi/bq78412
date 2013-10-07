@@ -3,9 +3,10 @@ from sys import stderr, exit
 
 class Device:
 
-    def __init__(self, address, bitrate):
+    def __init__(self, address, timeout, bitrate):
         try:
             self.device = Serial(address, bitrate)
+            self.device.timeout = timeout
         except SerialException:
             stderr.write("Error connecting to " + address + ".\n")
             exit(1)

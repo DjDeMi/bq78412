@@ -1,6 +1,7 @@
 # coding= utf-8
 from gi.repository import Gtk, GObject
 from bq78412 import Device
+from arguments import *
 
 class MainWindow(Gtk.Window):
 
@@ -133,7 +134,7 @@ class MainWindow(Gtk.Window):
     def on_refresh_toggled(self, refresh_check):
         self.refresh = refresh_check.get_active()
         if self.refresh:
-            GObject.timeout_add(5000, self.refresh_data)
+            GObject.timeout_add(self.args['tbd']*1000, self.refresh_data)
 
     def refresh_data(self):
         if self.refresh:
@@ -152,7 +153,8 @@ class MainWindow(Gtk.Window):
     def get_data(self):
         return self.device.get_data()
 
-device = Device("/dev/pts/8", 9600)
+args = read_arguments()
+device = Device(args['port'], args['timeout'], 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
