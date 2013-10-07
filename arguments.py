@@ -15,7 +15,10 @@ def help():
 
 def read_arguments():
     
-    port = 0
+    values = {}
+    values['port']=0
+    values['timeout']=1
+    values['tbd']=5
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
@@ -34,7 +37,11 @@ def read_arguments():
             sys.exit()
         elif o in ("-p", "--port"):
             try:
-                port = int(a)
+                values['port'] = int(a)
             except ValueError:
-                port = a
-    return port
+                values['port'] = a
+        elif o in ("-t", "--timeout"):
+            values['timeout'] = int(a)
+        elif o in ("-tbd", "--timebetweendata"):
+            values['tbd'] = int(a)
+    return values
