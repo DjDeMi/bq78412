@@ -1,5 +1,6 @@
 import getopt
 import sys
+from optparse import OptionParser
 
 def help():
     sys.stderr.write("""Erabilera: python3.3 main.py [aukerak]
@@ -14,6 +15,18 @@ def help():
 
     \n""")
 
+def read_arguments2():
+    values = {}
+    values['port']=0
+    values['timeout']=1
+    values['tbd']=5
+    parser = OptionParser()
+    usage = "usage: %prog [options]"
+    parser.add_option("-p", "--port", action=values['port'], default="/dev/ttyUSB0", type="string", help="Select serial device port")
+    parser.add_option("-t", "--timeout", action=values['timeout'], default=1, type="int", help="Serial calls timeout (sec)")
+    parser.add_option("-d", "--timebetweendata", action=values['tbd'], default=30, type="int", help="Time between data updates (sec)")
+    print values['port']
+    return values
 
 def read_arguments():
     

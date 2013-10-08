@@ -153,7 +153,7 @@ class MainWindow(Gtk.Window):
     def get_data(self):
         return self.device.get_data()
 
-args = read_arguments()
+args = read_arguments2()
 device = Device(args['port'], args['timeout'], 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)
