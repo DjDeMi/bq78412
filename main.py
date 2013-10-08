@@ -1,4 +1,5 @@
 # coding= utf-8
+#!/usr/bin/env python3.3
 from gi.repository import Gtk, GObject
 from bq78412 import Device
 from arguments import *
@@ -148,13 +149,24 @@ class MainWindow(Gtk.Window):
         self.avg_current_value.set_text(str(data['avg_current']))
         self.temperature_value.set_text(str(data['temperature']))
         self.rsoc_value.set_text(str(data['rsoc']))
-        print("data updated")
+        print("data updated with: "+str(data))
 
     def get_data(self):
         return self.device.get_data()
+    '''
+    def errorMessage(self, firstMessage, secondMessage):
+        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
+            Gtk.ButtonsType.OK, str(firstMessage))
+        dialog.format_secondary_text(str(secondMessage))
+        dialog.run()
+        print("ERROR dialog closed")
 
+        dialog.destroy()
+    '''
 args = read_arguments()
 print(args)
+print(type(args['timeout']))
+print(type(args['timebetweendata']))
 device = Device(args['port'], args['timeout'], 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)

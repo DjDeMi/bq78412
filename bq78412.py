@@ -1,5 +1,6 @@
 from serial import Serial, SerialException
 from sys import stderr, exit
+#from main import MainWindow
 
 class Device:
 
@@ -9,6 +10,7 @@ class Device:
             self.device.timeout = timeout
         except SerialException:
             stderr.write("Error connecting to " + address + ".\n")
+            #MainWindow.errorMessage("Error connecting", "Problems connecting with " + address)
             exit(1)
 
     def get_data(self):
@@ -30,7 +32,7 @@ class Device:
         raw_data = self.device.read(size)
         print("Receive data: "+str(raw_data))
         if len(raw_data) != 0:
-            if self.crc(raw_data[1:]) and self.ack(raw_data):
+            if self.crc(raw_data) and self.ack(raw_data):
                 return raw_data
         return None
 
