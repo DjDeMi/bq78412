@@ -23,16 +23,19 @@ class Device:
         return True
 
     def send_command(self, command):
+        print("Send command: "+str(command))
         self.device.write(command)
 
     def read_input(self, size):
         raw_data = self.device.read(size)
+        print("Receive data: "+str(raw_data))
         if len(raw_data) != 0:
-            if self.crc(raw_data) and self.ack(raw_data):
+            if self.crc(raw_data[1:]) and self.ack(raw_data):
                 return raw_data
         return None
 
     def parse_data(self, raw_data):
+        print(raw_data)
         data = {}
         data['voltage'] = (raw_data[6] << 8) + raw_data[5]
         data['current'] = ((raw_data[8] << 8) + raw_data[7])/100

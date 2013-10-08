@@ -134,7 +134,7 @@ class MainWindow(Gtk.Window):
     def on_refresh_toggled(self, refresh_check):
         self.refresh = refresh_check.get_active()
         if self.refresh:
-            GObject.timeout_add(self.args['tbd']*1000, self.refresh_data)
+            GObject.timeout_add(self.args['timebetweendata']*1000, self.refresh_data)
 
     def refresh_data(self):
         if self.refresh:
@@ -153,7 +153,8 @@ class MainWindow(Gtk.Window):
     def get_data(self):
         return self.device.get_data()
 
-args = read_arguments2()
+args = read_arguments()
+print(args)
 device = Device(args['port'], args['timeout'], 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)

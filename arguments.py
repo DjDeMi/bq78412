@@ -1,7 +1,10 @@
+import argparse
+'''
 import getopt
 import sys
 from optparse import OptionParser
-
+'''
+'''
 def help():
     sys.stderr.write("""Erabilera: python3.3 main.py [aukerak]
 
@@ -14,20 +17,15 @@ def help():
         python3.3 main.py -p /dev/ttyUSB0 -t 1 -d 10
 
     \n""")
-
-def read_arguments2():
-    values = {}
-    values['port']=0
-    values['timeout']=1
-    values['tbd']=5
-    parser = OptionParser()
-    usage = "usage: %prog [options]"
-    parser.add_option("-p", "--port", action=values['port'], default="/dev/ttyUSB0", type="string", help="Select serial device port")
-    parser.add_option("-t", "--timeout", action=values['timeout'], default=1, type="int", help="Serial calls timeout (sec)")
-    parser.add_option("-d", "--timebetweendata", action=values['tbd'], default=30, type="int", help="Time between data updates (sec)")
-    print values['port']
-    return values
-
+'''
+def read_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', default="/dev/ttyUSB0", type=str, help='Direction of the device')
+    parser.add_argument('-t', '--timeout', default=1, type=int, help='Timeout time in seconds waiting a response', choices=range(1,11))
+    parser.add_argument('-d', '--timebetweendata', default=5, type=int, help='Time between updating data from device in seconds', choices=range(5,601))
+    args = parser.parse_args()
+    return vars(args)
+'''
 def read_arguments():
     
     values = {}
@@ -62,3 +60,4 @@ def read_arguments():
         elif o in ("-d", "--timebetweendata"):
             values['tbd'] = int(a)
     return values
+'''
