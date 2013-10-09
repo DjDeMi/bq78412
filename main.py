@@ -144,25 +144,17 @@ class MainWindow(Gtk.Window):
 
     def update_data(self):
         data = self.get_data()
-        self.voltage_value.set_text(str(data['voltage']))
-        self.current_value.set_text(str(data['current']))
-        self.avg_current_value.set_text(str(data['avg_current']))
-        self.temperature_value.set_text(str(data['temperature']))
-        self.rsoc_value.set_text(str(data['rsoc']))
-        print("data updated with: "+str(data))
+        if data != None:
+            self.voltage_value.set_text(str(data['voltage']))
+            self.current_value.set_text(str(data['current']))
+            self.avg_current_value.set_text(str(data['avg_current']))
+            self.temperature_value.set_text(str(data['temperature']))
+            self.rsoc_value.set_text(str(data['rsoc']))
+            print("data updated with: "+str(data))
 
     def get_data(self):
         return self.device.get_data()
-    '''
-    def errorMessage(self, firstMessage, secondMessage):
-        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
-            Gtk.ButtonsType.OK, str(firstMessage))
-        dialog.format_secondary_text(str(secondMessage))
-        dialog.run()
-        print("ERROR dialog closed")
 
-        dialog.destroy()
-    '''
 args = read_arguments()
 print(args)
 print(type(args['timeout']))

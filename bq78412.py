@@ -1,6 +1,6 @@
 from serial import Serial, SerialException
 from sys import stderr, exit
-#from main import MainWindow
+from gi.repository import Gtk
 
 class Device:
 
@@ -10,14 +10,25 @@ class Device:
             self.device.timeout = timeout
         except SerialException:
             stderr.write("Error connecting to " + address + ".\n")
-            #MainWindow.errorMessage("Error connecting", "Problems connecting with " + address)
+            self.errorMessage("Error connecting", "Problems connecting with " + address)
             exit(1)
+    
+    def errorMessage(self, firstMessage, secondMessage):
+        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, str(firstMessage))
+        dialog.format_secondary_text(str(secondMessage))
+        dialog.run()
+        print("ERROR dialog closed")
 
+        dialog.destroy()
+        
     def get_data(self):
         self.send_command(b"\xFF\x16\x00\x00\x1A\x00\x0C")
         raw_data = self.read_input(27)
-        data = self.parse_data(raw_data)
-        return data
+        if raw_data != None:
+            data = self.parse_data(raw_data)
+            return data
+        else:
+            return None
 
     def reset_rsoc(self):
         self.send_command(b"\xFF\x13\x05\x00\x00\x64\x8D")
@@ -32,8 +43,18 @@ class Device:
         raw_data = self.device.read(size)
         print("Receive data: "+str(raw_data))
         if len(raw_data) != 0:
-            if self.crc(raw_data) and self.ack(raw_data):
+            if not self.crc(raw_data):
+                self.errorMessage("Data error", "Received CRC is not correct")
+                return None
+            elif not self.ack(raw_data):
+                self.errorMessage("Data error", "Received data has not ACK")
+                return None
+            elif size != len(raw_data):
+                self.errorMessage("Data error", "Received data has not correct size")
+            else:
                 return raw_data
+        else:
+            self.errorMessage("Timeout", "The device doesn't respond.")
         return None
 
     def parse_data(self, raw_data):
