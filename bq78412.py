@@ -43,18 +43,23 @@ class Device:
         raw_data = self.device.read(size)
         print("Receive data: "+str(raw_data))
         if len(raw_data) != 0:
-            if not self.crc(raw_data):
-                self.errorMessage("Data error", "Received CRC is not correct")
-                return None
-            elif not self.ack(raw_data):
-                self.errorMessage("Data error", "Received data has not ACK")
-                return None
+            if not self.ack(raw_data):
+                raise incorrect_ack(raw_data[1])
+                #self.errorMessage("Data error", "Received CRC is not correct")
+                #return None
+            elif not self.crc(raw_data):
+                raise incorrect_crc(raw_data[-1])
+                #self.errorMessage("Data error", "Received data has not ACK")
+                #return None
             elif size != len(raw_data):
-                self.errorMessage("Data error", "Received data has not correct size")
+                raise incorrect_size(len(raw_data))
+                #self.errorMessage("Data error", "Received data has not correct size")
+                #return None
             else:
                 return raw_data
         else:
-            self.errorMessage("Timeout", "The device doesn't respond.")
+            raise timeout_except()
+            #self.errorMessage("Timeout", "The device doesn't respond.")
         return None
 
     def parse_data(self, raw_data):
