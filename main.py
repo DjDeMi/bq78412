@@ -8,12 +8,12 @@ import logging
 
 class MainWindow(Gtk.Window):
 
-    def __init__(self, device):
+    def __init__(self, device, tbd):
         Gtk.Window.__init__(self)
         self.device = device
+        self.timebetweendata = tbd
 
         self.set_title("bq78412")
-        #self.set_default_size(300, 200)
         self.set_position(Gtk.WindowPosition.CENTER)
 
         vbox = Gtk.VBox(False)
@@ -131,9 +131,6 @@ class MainWindow(Gtk.Window):
     def on_rsoc_button_clicked(self, button):
         try:
             self.device.reset_rsoc()
-            logging.debug("aaa")
-            self.update_data()
-            logging.debug("rsoc reset")
         except incorrect_ack:
             self.error_message("Data error", "Received data has not ACK")
         except incorrect_crc:
@@ -142,15 +139,19 @@ class MainWindow(Gtk.Window):
             self.error_message("Data error", "Received data has not correct size")
         except timeout_except:
             self.error_message("Timeout", "The device doesn't respond.")
+        else:
+            logging.debug("aaa")
+            self.update_data()
+            logging.debug("rsoc reset")
 
     def on_refresh_toggled(self, refresh_check):
         self.refresh = refresh_check.get_active()
         if self.refresh:
-            GObject.timeout_add(self.args['timebetweendata']*1000, self.refresh_data)
+            GObject.timeout_add(self.timebetweendata*1000, self.refresh_data(refresh_check))
 
-    def refresh_data(self):
+    def refresh_data(self, refresh_check):
         if self.refresh:
-            self.update_data()
+            self.update_data(refresh_check)
         return self.refresh
     
     def error_message(self, firstMessage, secondMessage):
@@ -161,58 +162,53 @@ class MainWindow(Gtk.Window):
 
         dialog.destroy()
 
-    def update_data(self):
+    def update_data(self, refresh_check=None):
         try:
+            logging.debug("Refresh value check " + str(refresh_check))
+            logging.debug("Refresh value " + str(self.refresh))
             data = self.get_data()
+        except incorrect_ack:
+            self.error_message("Data error", "Received data has not ACK")
+            if refresh_check != None:
+                refresh_check.set_active(False)
+                self.refresh = False
+        except incorrect_crc:
+            self.error_message("Data error", "Received CRC is not correct")
+            if refresh_check != None:
+                refresh_check.set_active(False)
+                self.refresh = False
+        except incorrect_size:
+            self.error_message("Data error", "Received data has not correct size")
+            if refresh_check != None:
+                refresh_check.set_active(False)
+                self.refresh = False
+        except timeout_except:
+            self.error_message("Timeout", "The device doesn't respond.")
+            if refresh_check != None:
+                refresh_check.set_active(False)
+                self.refresh = False
+            logging.debug("Refresh value check" + str(refresh_check))
+            logging.debug("Refresh value " + str(self.refresh))
+        else:
             self.voltage_value.set_text(str(data['voltage']))
             self.current_value.set_text(str(data['current']))
             self.avg_current_value.set_text(str(data['avg_current']))
             self.temperature_value.set_text(str(data['temperature']))
             self.rsoc_value.set_text(str(data['rsoc']))
             logging.debug("data updated with: "+str(data))
-        except incorrect_ack:
-            self.error_message("Data error", "Received data has not ACK")
-        except incorrect_crc:
-            self.error_message("Data error", "Received CRC is not correct")
-        except incorrect_size:
-            self.error_message("Data error", "Received data has not correct size")
-        except timeout_except:
-            self.error_message("Timeout", "The device doesn't respond.")
+            
 
     def get_data(self):
         return self.device.get_data()
 
 args = read_arguments()
-print(args)
-print(type(args['timeout']))
-print(type(args['timebetweendata']))
 if args['verbose']:
-    #logging.config.fileConfig('logging.ini')
-    #logger = logging.getLogger('root')
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
     
-    '''
-    # create logger
-    logger = logging.getLogger('root')
-    logger.setLevel(logging.DEBUG)
-
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-
-    # create formatter
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
-    # add formatter to ch
-    ch.setFormatter(formatter)
-
-    # add ch to logger
-    logger.addHandler(ch)
-    '''
-    
+logging.debug("Received args: "+ str(args))
 logging.debug("Trying to connect")
 device = Device(args['port'], args['timeout'], 9600)
-win = MainWindow(device)
+win = MainWindow(device, args['timebetweendata'])
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
 Gtk.main()

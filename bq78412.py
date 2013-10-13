@@ -15,16 +15,6 @@ class Device:
             #self.errorMessage("Error connecting", "Problems connecting with " + address)
             exit(1)
             
-    '''
-    def errorMessage(self, firstMessage, secondMessage):
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, str(firstMessage))
-        dialog.format_secondary_text(str(secondMessage))
-        dialog.run()
-        print("ERROR dialog closed")
-
-        dialog.destroy()
-    '''
-        
     def get_data(self):
         self.send_command(b"\xFF\x16\x00\x00\x1A\x00\x0C")
         raw_data = self.read_input(27)
@@ -49,21 +39,14 @@ class Device:
         if len(raw_data) != 0:
             if not self.ack(raw_data):
                 raise incorrect_ack(raw_data[1])
-                #self.errorMessage("Data error", "Received CRC is not correct")
-                #return None
             elif not self.crc(raw_data):
                 raise incorrect_crc(raw_data[-1])
-                #self.errorMessage("Data error", "Received data has not ACK")
-                #return None
             elif size != len(raw_data):
                 raise incorrect_size(len(raw_data))
-                #self.errorMessage("Data error", "Received data has not correct size")
-                #return None
             else:
                 return raw_data
         else:
             raise timeout_except("Timeout finished")
-            #self.errorMessage("Timeout", "The device doesn't respond.")
         return None
 
     def parse_data(self, raw_data):
