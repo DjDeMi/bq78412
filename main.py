@@ -4,6 +4,7 @@ from gi.repository import Gtk, GObject
 from bq78412 import Device
 from arguments import *
 from exceptions import *
+import logging
 
 class MainWindow(Gtk.Window):
 
@@ -128,10 +129,19 @@ class MainWindow(Gtk.Window):
         self.update_data()
 
     def on_rsoc_button_clicked(self, button):
-        self.device.reset_rsoc()
-        print("aaa")
-        self.update_data()
-        print("rsoc reset")
+        try:
+            self.device.reset_rsoc()
+            logging.debug("aaa")
+            self.update_data()
+            logging.debug("rsoc reset")
+        except incorrect_ack:
+            self.error_message("Data error", "Received data has not ACK")
+        except incorrect_crc:
+            self.error_message("Data error", "Received CRC is not correct")
+        except incorrect_size:
+            self.error_message("Data error", "Received data has not correct size")
+        except timeout_except:
+            self.error_message("Timeout", "The device doesn't respond.")
 
     def on_refresh_toggled(self, refresh_check):
         self.refresh = refresh_check.get_active()
@@ -147,7 +157,7 @@ class MainWindow(Gtk.Window):
         dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, str(firstMessage))
         dialog.format_secondary_text(str(secondMessage))
         dialog.run()
-        print("ERROR dialog closed")
+        logging.debug("ERROR dialog closed")
 
         dialog.destroy()
 
@@ -159,7 +169,7 @@ class MainWindow(Gtk.Window):
             self.avg_current_value.set_text(str(data['avg_current']))
             self.temperature_value.set_text(str(data['temperature']))
             self.rsoc_value.set_text(str(data['rsoc']))
-            print("data updated with: "+str(data))
+            logging.debug("data updated with: "+str(data))
         except incorrect_ack:
             self.error_message("Data error", "Received data has not ACK")
         except incorrect_crc:
@@ -176,6 +186,31 @@ args = read_arguments()
 print(args)
 print(type(args['timeout']))
 print(type(args['timebetweendata']))
+if args['verbose']:
+    #logging.config.fileConfig('logging.ini')
+    #logger = logging.getLogger('root')
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%d/%m/%Y %H:%M:%S')
+    
+    '''
+    # create logger
+    logger = logging.getLogger('root')
+    logger.setLevel(logging.DEBUG)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+    '''
+    
+logging.debug("Trying to connect")
 device = Device(args['port'], args['timeout'], 9600)
 win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)

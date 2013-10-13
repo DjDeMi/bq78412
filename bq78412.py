@@ -2,6 +2,7 @@ from serial import Serial, SerialException
 from sys import stderr, exit
 from gi.repository import Gtk
 from exceptions import *
+import logging
 
 class Device:
 
@@ -11,7 +12,7 @@ class Device:
             self.device.timeout = timeout
         except SerialException:
             stderr.write("Error connecting to " + address + ".\n")
-            self.errorMessage("Error connecting", "Problems connecting with " + address)
+            #self.errorMessage("Error connecting", "Problems connecting with " + address)
             exit(1)
             
     '''
@@ -39,12 +40,12 @@ class Device:
         return True
 
     def send_command(self, command):
-        print("Send command: "+str(command))
+        logging.debug("Send command: "+str(command))
         self.device.write(command)
 
     def read_input(self, size):
         raw_data = self.device.read(size)
-        print("Receive data: "+str(raw_data))
+        logging.debug("Receive data: "+str(raw_data))
         if len(raw_data) != 0:
             if not self.ack(raw_data):
                 raise incorrect_ack(raw_data[1])
@@ -66,7 +67,7 @@ class Device:
         return None
 
     def parse_data(self, raw_data):
-        print(raw_data)
+        logging.debug("Raw data to parse: " + str(raw_data))
         data = {}
         data['voltage'] = (raw_data[6] << 8) + raw_data[5]
         data['current'] = ((raw_data[8] << 8) + raw_data[7])/100
