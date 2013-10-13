@@ -12,7 +12,8 @@ class Device:
             stderr.write("Error connecting to " + address + ".\n")
             self.errorMessage("Error connecting", "Problems connecting with " + address)
             exit(1)
-    
+            
+    '''
     def errorMessage(self, firstMessage, secondMessage):
         dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, str(firstMessage))
         dialog.format_secondary_text(str(secondMessage))
@@ -20,6 +21,7 @@ class Device:
         print("ERROR dialog closed")
 
         dialog.destroy()
+    '''
         
     def get_data(self):
         self.send_command(b"\xFF\x16\x00\x00\x1A\x00\x0C")
