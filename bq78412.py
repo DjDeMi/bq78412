@@ -1,6 +1,7 @@
 from serial import Serial, SerialException
 from sys import stderr, exit
 from gi.repository import Gtk
+from exceptions import *
 
 class Device:
 
@@ -60,7 +61,7 @@ class Device:
             else:
                 return raw_data
         else:
-            raise timeout_except()
+            raise timeout_except("Timeout finished")
             #self.errorMessage("Timeout", "The device doesn't respond.")
         return None
 

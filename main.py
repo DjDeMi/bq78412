@@ -3,6 +3,7 @@
 from gi.repository import Gtk, GObject
 from bq78412 import Device
 from arguments import *
+from exceptions import *
 
 class MainWindow(Gtk.Window):
 
