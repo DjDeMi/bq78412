@@ -17,7 +17,7 @@ class Device:
             
     def get_data(self):
         self.send_command(b"\xFF\x16\x00\x00\x1A\x00\x0C")
-        raw_data = self.read_input(27)
+        raw_data = self.read_input(55)#27)
         if raw_data != None:
             data = self.parse_data(raw_data)
             return data
@@ -25,7 +25,7 @@ class Device:
             return None
 
     def reset_rsoc(self):
-        self.send_command(b"\xFF\x13\x05\x00\x00\x64\x8D")
+        self.send_command(b"\xFF\x13\x05\x00\x00\x64\x72")
         raw_data = self.read_input(3)
         return True
 
@@ -52,16 +52,23 @@ class Device:
     def parse_data(self, raw_data):
         logging.debug("Raw data to parse: " + str(raw_data))
         data = {}
-        data['voltage'] = (raw_data[6] << 8) + raw_data[5]
-        data['current'] = ((raw_data[8] << 8) + raw_data[7])/100
-        data['avg_current'] = ((raw_data[18] << 8) + raw_data[17])/100
-        data['temperature'] = (raw_data[4] << 8) + raw_data[3]
-        data['rsoc'] = (raw_data[24] << 8) + raw_data[23]
+        data['voltage'] = (raw_data[7] << 8) + raw_data[6]
+        #konp_balioa = b"\xFF\xFF"
+        if raw_data[9] > 160:
+                data['current'] = ((65535 - ((raw_data[9] << 8) + raw_data[8]) + 1)*100)*-1
+        else:
+            data['current'] = ((raw_data[9] << 8) + raw_data[8])*100
+        if raw_data[19] > 160:
+            data['avg_current'] = ((65535 - ((raw_data[19] << 8) + raw_data[18]) + 1)*100)*-1
+        else:
+            data['avg_current'] = ((raw_data[19] << 8) + raw_data[18])*100
+        data['temperature'] = (raw_data[5] << 8) + raw_data[4]
+        data['rsoc'] = (raw_data[25] << 8) + raw_data[24]
         return data
 
     def crc(self, data):
         result = 0
-        for c in data[:-1]:
+        for c in data[1:-1]:
             result = result ^ c
         return result == data[-1]
 

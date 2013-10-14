@@ -159,7 +159,6 @@ class MainWindow(Gtk.Window):
         dialog.format_secondary_text(str(secondMessage))
         dialog.run()
         logging.debug("ERROR dialog closed")
-
         dialog.destroy()
 
     def update_data(self, refresh_check=None):
