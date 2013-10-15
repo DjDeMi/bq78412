@@ -103,10 +103,10 @@ class MainWindow(Gtk.Window):
         hbox_refresh = Gtk.HBox(False)
         vbox.pack_start(hbox_refresh, False, False, 6)
 
-        refresh_check = Gtk.CheckButton("Auto refresh")
-        refresh_check.set_size_request(100, 50)
-        refresh_check.connect("toggled", self.on_refresh_toggled)
-        hbox_refresh.pack_start(refresh_check, False, False, 6)
+        self.refresh_check = Gtk.CheckButton("Auto refresh")
+        self.refresh_check.set_size_request(100, 50)
+        self.refresh_check.connect("toggled", self.on_refresh_toggled)
+        hbox_refresh.pack_start(self.refresh_check, False, False, 6)
 
         # buttons hbox
         hbox_buttons = Gtk.HBox(False)
@@ -144,14 +144,14 @@ class MainWindow(Gtk.Window):
             self.update_data()
             logging.debug("rsoc reset")
 
-    def on_refresh_toggled(self, refresh_check):
-        self.refresh = refresh_check.get_active()
+    def on_refresh_toggled(self):
+        self.refresh = self.refresh_check.get_active()
         if self.refresh:
             GObject.timeout_add(self.timebetweendata*1000, self.refresh_data(refresh_check))
 
-    def refresh_data(self, refresh_check):
+    def refresh_data(self):
         if self.refresh:
-            self.update_data(refresh_check)
+            self.update_data(self.refresh_check)
         return self.refresh
     
     def error_message(self, firstMessage, secondMessage):
@@ -161,31 +161,27 @@ class MainWindow(Gtk.Window):
         logging.debug("ERROR dialog closed")
         dialog.destroy()
 
-    def update_data(self, refresh_check=None):
+    def update_data(self):
         try:
             logging.debug("Refresh value check " + str(refresh_check))
             logging.debug("Refresh value " + str(self.refresh))
             data = self.get_data()
         except incorrect_ack:
             self.error_message("Data error", "Received data has not ACK")
-            if refresh_check != None:
-                refresh_check.set_active(False)
-                self.refresh = False
+            self.refresh_check.set_active(False)
+            self.refresh = False
         except incorrect_crc:
             self.error_message("Data error", "Received CRC is not correct")
-            if refresh_check != None:
-                refresh_check.set_active(False)
-                self.refresh = False
+            self.refresh_check.set_active(False)
+            self.refresh = False
         except incorrect_size:
             self.error_message("Data error", "Received data has not correct size")
-            if refresh_check != None:
-                refresh_check.set_active(False)
-                self.refresh = False
+            self.refresh_check.set_active(False)
+            self.refresh = False
         except timeout_except:
             self.error_message("Timeout", "The device doesn't respond.")
-            if refresh_check != None:
-                refresh_check.set_active(False)
-                self.refresh = False
+            self.refresh_check.set_active(False)
+            self.refresh = False
             logging.debug("Refresh value check" + str(refresh_check))
             logging.debug("Refresh value " + str(self.refresh))
         else:
