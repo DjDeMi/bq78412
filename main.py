@@ -144,14 +144,14 @@ class MainWindow(Gtk.Window):
             self.update_data()
             logging.debug("rsoc reset")
 
-    def on_refresh_toggled(self):
-        self.refresh = self.refresh_check.get_active()
+    def on_refresh_toggled(self, refresh_check):
+        self.refresh = refresh_check.get_active()
         if self.refresh:
-            GObject.timeout_add(self.timebetweendata*1000, self.refresh_data(refresh_check))
+            GObject.timeout_add(self.timebetweendata*1000, refresh_data())
 
     def refresh_data(self):
         if self.refresh:
-            self.update_data(self.refresh_check)
+            self.update_data()
         return self.refresh
     
     def error_message(self, firstMessage, secondMessage):
@@ -163,7 +163,7 @@ class MainWindow(Gtk.Window):
 
     def update_data(self):
         try:
-            logging.debug("Refresh value check " + str(refresh_check))
+            logging.debug("Refresh value check " + str(self.refresh_check))
             logging.debug("Refresh value " + str(self.refresh))
             data = self.get_data()
         except incorrect_ack:
@@ -182,7 +182,7 @@ class MainWindow(Gtk.Window):
             self.error_message("Timeout", "The device doesn't respond.")
             self.refresh_check.set_active(False)
             self.refresh = False
-            logging.debug("Refresh value check" + str(refresh_check))
+            logging.debug("Refresh value check" + str(self.refresh_check))
             logging.debug("Refresh value " + str(self.refresh))
         else:
             self.voltage_value.set_text(str(data['voltage']))
