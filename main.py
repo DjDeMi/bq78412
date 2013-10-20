@@ -1,5 +1,5 @@
-# coding= utf-8
 #!/usr/bin/env python3.3
+# coding= utf-8
 from gi.repository import Gtk, GObject
 from bq78412 import Device
 from arguments import *
