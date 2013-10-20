@@ -38,15 +38,15 @@ class Device:
         logging.debug("Receive data: "+str(raw_data))
         if len(raw_data) != 0:
             if not self.ack(raw_data):
-                raise incorrect_ack(raw_data[1])
+                raise ACKError(raw_data[1])
             elif not self.crc(raw_data):
-                raise incorrect_crc(raw_data[-1])
+                raise CRCError(raw_data[-1])
             elif size != len(raw_data):
-                raise incorrect_size(len(raw_data))
+                raise sizeError(len(raw_data))
             else:
                 return raw_data
         else:
-            raise timeout_except("Timeout finished")
+            raise timeoutError("Timeout finished")
         return None
 
     def parse_data(self, raw_data):

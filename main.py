@@ -8,10 +8,9 @@ import logging
 
 class MainWindow(Gtk.Window):
 
-    def __init__(self, device, tbd):
+    def __init__(self, device):
         Gtk.Window.__init__(self)
         self.device = device
-        self.timebetweendata = tbd
 
         self.set_title("bq78412")
         self.set_position(Gtk.WindowPosition.CENTER)
@@ -103,6 +102,16 @@ class MainWindow(Gtk.Window):
         hbox_refresh = Gtk.HBox(False)
         vbox.pack_start(hbox_refresh, False, False, 6)
 
+        adj = Gtk.Adjustment(0.5, 0.5, 60, 0.5, 1, 0)
+        self.spinner = Gtk.SpinButton()
+        self.spinner.configure(adj, 0, 0)
+        self.spinner.set_digits(1)
+        hbox_refresh.pack_start(self.spinner, False, False, 6)
+
+        spinner_label = Gtk.Label("in minutes")
+        spinner_label.set_size_request(100, 50)
+        hbox_refresh.pack_start(spinner_label, False, False, 6)
+
         self.refresh_check = Gtk.CheckButton("Auto refresh")
         self.refresh_check.set_size_request(100, 50)
         self.refresh_check.connect("toggled", self.on_refresh_toggled)
@@ -131,13 +140,13 @@ class MainWindow(Gtk.Window):
     def on_rsoc_button_clicked(self, button):
         try:
             self.device.reset_rsoc()
-        except incorrect_ack:
+        except ACKError:
             self.error_message("Data error", "Received data has not ACK")
-        except incorrect_crc:
+        except CRCError:
             self.error_message("Data error", "Received CRC is not correct")
-        except incorrect_size:
+        except sizeError:
             self.error_message("Data error", "Received data has not correct size")
-        except timeout_except:
+        except timeoutError:
             self.error_message("Timeout", "The device doesn't respond.")
         else:
             logging.debug("aaa")
@@ -146,8 +155,9 @@ class MainWindow(Gtk.Window):
 
     def on_refresh_toggled(self, refresh_check):
         self.refresh = refresh_check.get_active()
+        logging.debug("Data update time: " + str(self.spinner.get_value()))
         if self.refresh:
-            GObject.timeout_add(self.timebetweendata*1000, refresh_data())
+            GObject.timeout_add(self.spinner.get_value()*60*1000, self.refresh_data())
 
     def refresh_data(self):
         if self.refresh:
@@ -166,19 +176,19 @@ class MainWindow(Gtk.Window):
             logging.debug("Refresh value check " + str(self.refresh_check))
             logging.debug("Refresh value " + str(self.refresh))
             data = self.get_data()
-        except incorrect_ack:
+        except ACKError:
             self.error_message("Data error", "Received data has not ACK")
             self.refresh_check.set_active(False)
             self.refresh = False
-        except incorrect_crc:
+        except CRCError:
             self.error_message("Data error", "Received CRC is not correct")
             self.refresh_check.set_active(False)
             self.refresh = False
-        except incorrect_size:
+        except sizeError:
             self.error_message("Data error", "Received data has not correct size")
             self.refresh_check.set_active(False)
             self.refresh = False
-        except timeout_except:
+        except timeoutError:
             self.error_message("Timeout", "The device doesn't respond.")
             self.refresh_check.set_active(False)
             self.refresh = False
@@ -203,7 +213,7 @@ if args['verbose']:
 logging.debug("Received args: "+ str(args))
 logging.debug("Trying to connect")
 device = Device(args['port'], args['timeout'], 9600)
-win = MainWindow(device, args['timebetweendata'])
+win = MainWindow(device)
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
 Gtk.main()
