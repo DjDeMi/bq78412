@@ -1,0 +1,9 @@
+class crc_incorrect(Exception):
+    def __init__(self, value):
+        self.value = value
+    
+    def __str__(self):
+        return "Error " + str(self.value)
+
+class timeoutError(Exception):
+    
