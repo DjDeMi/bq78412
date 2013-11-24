@@ -3,8 +3,8 @@
 
 import sys
 from gi.repository import Gtk, GObject
-#import appindicator
-from gi.repository import AppIndicator3 as appindicator
+import appindicator
+#from gi.repository import AppIndicator3 as appindicator
 
 import imaplib
 import re
