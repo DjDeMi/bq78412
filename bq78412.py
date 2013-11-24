@@ -70,6 +70,8 @@ class Device:
         result = 0
         for c in data[1:-1]:
             result = result ^ c
+        print(result)
+        print(data)
         return result == data[-1]
 
     def ack(self, data):
