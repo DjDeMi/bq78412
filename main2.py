@@ -13,13 +13,20 @@ class MainWindow(Gtk.Window):
         Gtk.Window.__init__(self)
         self.device = device
 
-        self.ind = AppIndicator3.Indicator.new("example-simple-client", "indicator-messages", AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+        self.ind = AppIndicator3.Indicator.new("bq78412-indicator", "", AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
         self.ind.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
-        self.ind.set_attention_icon ("indicator-messages-new")
-        # Icono para el indicador
+        #self.ind.set_attention_icon("indicator-messages-new")
+        # Indicator icon
         self.ind.set_icon("distributor-logo")
 
-        #new menu
+        self.label = "%(str(156))s %"
+        self.guide = "100 %"
+
+        self.ind.set_label(self.label.center(28), self.guide)
+
+        #self.ind.set_label("0%", self.ind.get_label_guide())
+
+        # new menu
         self.menu = Gtk.Menu()
 
         self.menuItemData = Gtk.MenuItem("Get Data")
@@ -187,6 +194,7 @@ class MainWindow(Gtk.Window):
         self.update_data()
 
     def on_rsoc_button_clicked(self, button):
+        self.ind.set_status(AppIndicator3.IndicatorStatus.ATTENTION)
         try:
             self.device.reset_rsoc()
         except ACKError:

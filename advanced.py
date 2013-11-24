@@ -211,7 +211,7 @@ class AdvancedWindow(Gtk.Window):
             value = self.get_value("Insert hex value between 0000 to BFFF", "Change Device Configuration 2")
             print(value)
             if(value != None):
-                if(0<=int(value,10)<=int(BFFF,16)):
+                if(0<=int(value,10)<=int("BFFF",16)):
                     print("Balio zuzena, ez da None")
                     break
                 else:
@@ -268,7 +268,7 @@ class AdvancedWindow(Gtk.Window):
             value = self.get_value("Insert hex value between 0000 to FFFF", "Change Display Configuration 1")
             print(value)
             if(value != None):
-                if(0<=int(value,10)<=int(FFFF,16)):
+                if(0<=int(value,10)<=int("FFFF",16)):
                     print("Balio zuzena, ez da None")
                     break
                 else:
@@ -324,7 +324,7 @@ class AdvancedWindow(Gtk.Window):
             value = self.get_value("Insert hex value between 0000 to FFFF", "Change Display Configuration 2")
             print(value)
             if(value != None):
-                if(0<=int(value,10)<=int(FFFF,16)):
+                if(0<=int(value,10)<=int("FFFF",16)):
                     print("Balio zuzena, ez da None")
                     break
                 else:
@@ -380,7 +380,7 @@ class AdvancedWindow(Gtk.Window):
             value = self.get_value("Insert hex value between 0000 to FFFF", "Change Display Configuration 3")
             print(value)
             if(value != None):
-                if(0<=int(value,10)<=int(FFFF,16)):
+                if(0<=int(value,10)<=int("FFFF",16)):
                     print("Balio zuzena, ez da None")
                     break
                 else:
@@ -436,7 +436,7 @@ class AdvancedWindow(Gtk.Window):
             value = self.get_value("Insert hex value between 0000 to FFFF", "Change Display Configuration 4")
             print(value)
             if(value != None):
-                if(0<=int(value,10)<=int(FFFF,16)):
+                if(0<=int(value,10)<=int("FFFF",16)):
                     print("Balio zuzena, ez da None")
                     break
                 else:
@@ -492,7 +492,7 @@ class AdvancedWindow(Gtk.Window):
             value = self.get_value("Insert hex value between 0000 to FFFF", "Change Display Configuration 5")
             print(value)
             if(value != None):
-                if(0<=int(value,10)<=int(FFFF,16)):
+                if(0<=int(value,10)<=int("FFFF",16)):
                     print("Balio zuzena, ez da None")
                     break
                 else:
