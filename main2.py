@@ -13,9 +13,9 @@ class MainWindow(Gtk.Window):
         Gtk.Window.__init__(self)
         self.device = device
 
-        self.ind = AppIndicator3.Indicator.new("bq78412-indicator", "", AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+        self.ind = AppIndicator3.Indicator.new("bq78412-indicator", "indicator-messages", AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
         self.ind.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
-        #self.ind.set_attention_icon("indicator-messages-new")
+        self.ind.set_attention_icon("indicator-messages-new")
         # Indicator icon
         self.ind.set_icon("distributor-logo")
 
@@ -168,12 +168,12 @@ class MainWindow(Gtk.Window):
         vbox.pack_start(hbox_buttons, False, False, 6)
 
         read_button = Gtk.Button(label="Read data")
-        read_button.set_size_request(156, 50)
+        read_button.set_size_request(160, 50)
         read_button.connect("clicked", self.on_read_button_clicked)
         hbox_buttons.pack_start(read_button, False, False, 6)
 
         rsoc_button = Gtk.Button(label="RSOC 100%")
-        rsoc_button.set_size_request(156, 50)
+        rsoc_button.set_size_request(160, 50)
         rsoc_button.connect("clicked", self.on_rsoc_button_clicked)
         hbox_buttons.pack_start(rsoc_button, False, False, 6)
 
@@ -183,7 +183,7 @@ class MainWindow(Gtk.Window):
         vbox.pack_start(hbox_advanced, False, False, 6)
 
         advanced_button = Gtk.Button(label="Advanced Settings")
-        advanced_button.set_size_request(312, 50)
+        advanced_button.set_size_request(332, 50)
         advanced_button.connect("clicked", self.on_advanced_button_clicked)
         hbox_advanced.pack_start(advanced_button, False, False, 6)
 
